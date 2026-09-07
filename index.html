@@ -90,8 +90,14 @@ body.st-r .word{color:#B02A2E}
   width:min(84vw,1400px);
   margin-top:clamp(28px,5vh,64px);   /* 赤ライン上の数字が信号機と重ならないための余白 */
 }
+.barrow{display:flex; align-items:center; gap:clamp(12px,1.4vw,26px)}
+.thval{
+  flex:none; font-weight:800; color:#B02A2E;
+  font-size:clamp(22px,4vh,52px); line-height:1;
+  font-variant-numeric:tabular-nums; min-width:2em; text-align:right;
+}
 .bar{
-  position:relative; height:clamp(20px,3.4vh,40px);
+  position:relative; flex:1; height:clamp(20px,3.4vh,40px);
   background:#E4E6E4; border-radius:999px;
 }
 .bar .fill{
@@ -118,11 +124,6 @@ body.st-r .bar .fill{background:var(--red)}
 .handle:hover .line, .handle.drag .line{width:14px}
 .handle:focus-visible{outline:none}
 .handle:focus-visible .line{box-shadow:0 0 0 3px rgba(35,40,43,.45)}
-.handle .chip{
-  position:absolute; top:-2em; left:50%; transform:translateX(-50%);
-  font-weight:800; font-size:clamp(14px,1.5vw,26px); color:#B02A2E;
-  font-variant-numeric:tabular-nums; line-height:1;
-}
 .bar-hint{
   margin-top:14px; text-align:center;
   font-weight:700; font-size:clamp(11px,1.1vw,18px); color:var(--muted);
@@ -191,7 +192,8 @@ body.st-r .bar .fill{background:var(--red)}
   .mark.y{top:-5px; bottom:-5px; width:7px}
   .handle{top:-10px; bottom:-10px}
   .handle .line{width:10px}
-  .handle .chip{top:-1.6em; font-size:13px}
+  .thval{font-size:18px}
+  .barrow{gap:10px}
   .bar-hint{margin-top:8px; font-size:10px}
   .foot{font-size:8px; padding:1px 8px 3px}
   .appname{top:8px; left:12px; font-size:12px}
@@ -230,13 +232,15 @@ body.st-r .bar .fill{background:var(--red)}
     </div>
   </div>
   <div class="barwrap">
-    <div class="bar" id="bar">
-      <div class="fill" id="barFill"></div>
-      <div class="mark y" id="markY" aria-hidden="true"></div>
-      <div class="handle" id="markR" role="slider" tabindex="0"
-           aria-label="あかに なる おおきさ" aria-valuemin="20" aria-valuemax="100" aria-valuenow="70">
-        <div class="chip" id="thVal">70</div>
-        <div class="line"></div>
+    <div class="barrow">
+      <div class="thval" id="thVal">70</div>
+      <div class="bar" id="bar">
+        <div class="fill" id="barFill"></div>
+        <div class="mark y" id="markY" aria-hidden="true"></div>
+        <div class="handle" id="markR" role="slider" tabindex="0"
+             aria-label="あかに なる おおきさ" aria-valuemin="20" aria-valuemax="100" aria-valuenow="70">
+          <div class="line"></div>
+        </div>
       </div>
     </div>
     <div class="bar-hint">あかい せんを うごかして、「あかに なる おおきさ」を きめよう</div>
