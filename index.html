@@ -7,7 +7,7 @@
 <meta name="description" content="教室の音の大きさをマイクで計り、信号機の色で知らせるツール。音はこの端末の中だけで処理し、録音・送信はしません。">
 <style>
 :root{
-  --bg:#F2F3F1; --ink:#23282B; --muted:#6E7478; --line:#DDE0DD;
+  --bg:#C6C8C4; --ink:#23282B; --muted:#565B5E; --line:#AEB1AC;
   --green:#2FA95C; --yellow:#F2B824; --red:#E23B3F;
   --housing:#31363A;
 }
@@ -21,12 +21,12 @@ body{
   -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none;
   transition:background .5s;
 }
-body.st-y{background:#F7EBC9}
-body.st-r{background:#F4D4D3}
+body.st-y{background:#EBD597}
+body.st-r{background:#E9AFAD}
 button{font-family:inherit; cursor:pointer}
 svg.ic{width:1.25em; height:1.25em; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:-0.25em}
 
-/* ── 右上の小さなアイコンボタン（バーなし） ── */
+/* ── 右上の小さなアイコンボタン ── */
 .chrome{
   position:fixed; top:12px; right:14px; z-index:50;
   display:flex; gap:8px;
@@ -34,7 +34,7 @@ svg.ic{width:1.25em; height:1.25em; stroke:currentColor; fill:none; stroke-width
 .ibtn{
   width:clamp(36px,3.2vw,48px); height:clamp(36px,3.2vw,48px);
   display:flex; align-items:center; justify-content:center;
-  color:var(--muted); background:rgba(255,255,255,.7);
+  color:var(--muted); background:rgba(255,255,255,.55);
   border:1.5px solid var(--line); border-radius:10px;
   transition:color .12s, border-color .12s;
 }
@@ -53,8 +53,8 @@ body.muted #muteBtn .off{display:block}
 .stage{
   flex:1; min-height:0; display:flex; flex-direction:column;
   align-items:center; justify-content:center; gap:2.5vh;
-  padding:clamp(52px,6vh,72px) 3vw 1vh;
-  overflow:hidden;   /* 万一あふれても、下の設定帯を押し出さない */
+  padding:clamp(52px,6vh,72px) 3vw 3vh;
+  overflow:hidden;   /* 万一あふれても、下の要素を押し出さない */
 }
 .hero{
   display:flex; align-items:center; justify-content:center;
@@ -76,18 +76,19 @@ body.st-r .lamp.r{background:var(--red); box-shadow:0 0 6vh 1vh rgba(226,59,63,.
 .word{
   font-weight:800; font-size:clamp(26px,4.5vw,84px); line-height:1.2; min-height:1.25em;
 }
-body.st-g .word{color:var(--green)}
-body.st-y .word{color:#B8860B}
-body.st-r .word{color:var(--red)}
+body.st-g .word{color:#1F7A41}
+body.st-y .word{color:#8A6508}
+body.st-r .word{color:#B02A2E}
 .num{
   font-weight:800; line-height:1; font-variant-numeric:tabular-nums;
   font-size:clamp(88px,19vh,290px);
 }
 .num-label{font-weight:700; font-size:clamp(12px,1.3vw,22px); color:var(--muted); margin-top:.6vh}
 
-/* ── バーメーター ── */
+/* ── バーメーター（赤ラインをつかんで しきい値を動かす） ── */
+.barwrap{width:min(84vw,1400px)}
 .bar{
-  position:relative; width:min(84vw,1400px); height:clamp(20px,3.4vh,40px);
+  position:relative; height:clamp(20px,3.4vh,40px);
   background:#E4E6E4; border-radius:999px;
 }
 .bar .fill{
@@ -96,46 +97,33 @@ body.st-r .word{color:var(--red)}
 }
 body.st-y .bar .fill{background:var(--yellow)}
 body.st-r .bar .fill{background:var(--red)}
-.mark{position:absolute; top:-7px; bottom:-7px; width:3px; border-radius:2px}
-.mark.y{background:var(--yellow)}
-.mark.r{background:var(--red)}
-
-/* ── 下部の設定帯（常時表示・細く） ── */
-.bottom{
-  flex:none; display:flex; align-items:center; gap:1.6vw; flex-wrap:wrap;
-  padding:1vh 2.4vw; border-top:1px solid var(--line);
-  font-weight:700; font-size:clamp(13px,1.3vw,24px);
+.mark.y{
+  position:absolute; top:-8px; bottom:-8px; width:9px; border-radius:5px;
+  background:var(--yellow); transform:translateX(-50%);
+  box-shadow:0 0 0 1px rgba(0,0,0,.12);
 }
-.bottom label{white-space:nowrap}
-.bottom input[type=range]{
-  flex:1; min-width:140px; height:8px; appearance:none; -webkit-appearance:none;
-  background:#E4E6E4; border-radius:999px; outline:none;
+.handle{
+  position:absolute; top:-16px; bottom:-16px; width:40px;
+  transform:translateX(-50%);
+  display:flex; align-items:stretch; justify-content:center;
+  cursor:ew-resize; touch-action:none;
 }
-.bottom input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none; width:28px; height:28px; border-radius:50%;
-  background:var(--ink); border:none;
+.handle .line{
+  width:12px; border-radius:6px; background:var(--red);
+  box-shadow:0 0 0 1px rgba(0,0,0,.15), 0 2px 6px rgba(0,0,0,.25);
 }
-.bottom input[type=range]::-moz-range-thumb{
-  width:28px; height:28px; border-radius:50%; background:var(--ink); border:none;
+.handle:hover .line, .handle.drag .line{width:14px}
+.handle:focus-visible{outline:none}
+.handle:focus-visible .line{box-shadow:0 0 0 3px rgba(35,40,43,.45)}
+.handle .chip{
+  position:absolute; top:-2em; left:50%; transform:translateX(-50%);
+  font-weight:800; font-size:clamp(14px,1.5vw,26px); color:#B02A2E;
+  font-variant-numeric:tabular-nums; line-height:1;
 }
-.bottom input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(35,40,43,.3)}
-.bottom .val{
-  font-weight:800; font-size:clamp(16px,1.8vw,32px); font-variant-numeric:tabular-nums;
-  min-width:2.2em; text-align:right;
+.bar-hint{
+  margin-top:14px; text-align:center;
+  font-weight:700; font-size:clamp(11px,1.1vw,18px); color:var(--muted);
 }
-.count{
-  display:flex; align-items:baseline; gap:.5em; white-space:nowrap;
-  border-left:1px solid var(--line); padding-left:1.6vw;
-}
-.count .n{
-  font-weight:800; font-size:clamp(22px,2.6vw,48px); line-height:1;
-  font-variant-numeric:tabular-nums; color:var(--red);
-}
-.reset{
-  border:none; background:none; color:var(--muted); font-weight:700;
-  font-size:clamp(12px,1.1vw,20px); padding:4px; white-space:nowrap;
-}
-.reset:hover{color:var(--ink)}
 
 /* ── フッター ── */
 .foot{
@@ -158,7 +146,7 @@ body.st-r .bar .fill{background:var(--red)}
   background:var(--ink); border:none; border-radius:14px; padding:.55em 1.4em;
 }
 #gateBtn:active{transform:translateY(2px)}
-#gateErr{font-weight:700; font-size:clamp(13px,1.3vw,22px); color:var(--red); line-height:1.8; max-width:36em}
+#gateErr{font-weight:700; font-size:clamp(13px,1.3vw,22px); color:#B02A2E; line-height:1.8; max-width:36em}
 #gateErr[hidden]{display:none}
 
 /* ── せつめいモーダル ── */
@@ -178,9 +166,7 @@ body.st-r .bar .fill{background:var(--red)}
   .num{font-size:clamp(72px,24vw,180px)}
   .word{font-size:clamp(22px,7vw,48px)}
   .stage{padding-top:clamp(52px,7vh,72px); gap:2vh}
-  .bar{width:92vw}
-  .bottom{gap:3vw; padding:1vh 4vw}
-  .count{padding-left:3vw}
+  .barwrap{width:92vw}
 }
 @media (prefers-reduced-motion:reduce){
   body,.lamp,.bar .fill{transition:none}
@@ -216,27 +202,19 @@ body.st-r .bar .fill{background:var(--red)}
       <div class="num-label">おとの おおきさ（めやす）</div>
     </div>
   </div>
-  <div class="bar">
-    <div class="fill" id="barFill"></div>
-    <div class="mark y" id="markY"></div>
-    <div class="mark r" id="markR"></div>
+  <div class="barwrap">
+    <div class="bar" id="bar">
+      <div class="fill" id="barFill"></div>
+      <div class="mark y" id="markY" aria-hidden="true"></div>
+      <div class="handle" id="markR" role="slider" tabindex="0"
+           aria-label="あかに なる おおきさ" aria-valuemin="20" aria-valuemax="100" aria-valuenow="70">
+        <div class="chip" id="thVal">70</div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <div class="bar-hint">あかい せんを うごかして、「あかに なる おおきさ」を きめよう</div>
   </div>
 </main>
-
-<div class="bottom">
-  <label for="thSlider">あかに なる おおきさ</label>
-  <input type="range" id="thSlider" min="20" max="100" step="1" value="70">
-  <span class="val" id="thVal">70</span>
-  <span class="count">
-    <span>あかに なった かいすう</span>
-    <span class="n" id="countNum">0</span>
-    <span>かい</span>
-  </span>
-  <button class="reset" id="resetBtn" type="button">
-    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-    0に もどす
-  </button>
-</div>
 
 <div class="foot">マイクの おとは この たんまつの なかだけで つかいます。ろくおんや そうしんは しません。</div>
 
@@ -256,10 +234,10 @@ body.st-r .bar .fill{background:var(--red)}
     <h2>このアプリについて</h2>
     <div class="body">
       <p>教室の音の大きさをマイクで計り、信号機の色（青→黄→赤）で知らせるツールです。教室の大型モニタに映してお使いください。</p>
-      <p><b>つかいかた：</b>下のスライダーで「あかに なる おおきさ」を決めます。その85%をこえると黄色、設定値をこえると赤になり、警告音が1回鳴って回数が数えられます。回数は保存されず、「0に もどす」やページの再読み込みでリセットされます。一度黄色より下に下がるまで、次の赤は数えません。</p>
+      <p><b>つかいかた：</b>メーターの赤いラインを左右にドラッグして「あかに なる おおきさ」を決めます（キーボードの←→でも動かせます）。その85%（黄色いライン）をこえると黄色、赤いラインをこえると赤になり、警告音が1回鳴ります。一度黄色より下に下がるまで、次の警告音は鳴りません。</p>
       <p><b>けいそくの一時停止：</b>警告音を マイクが拾わないよう、警告音のあいだと そのあと0.5秒は計測を止め、そのあと自動で再開します。</p>
-      <p><b>おおきさの数字について：</b>表示は0〜100の「めやす」です。マイクの感度は端末ごとにちがうため、正確な騒音計（デシベル）の代わりにはなりません。教室にあわせてスライダーで調整してください。</p>
-      <p><b>先生・おうちのかたへ：</b>マイクの音はこの端末の中だけで処理し、録音・保存・送信は一切しません。端末（ブラウザ）に保存されるのはスライダーの設定値と音のオン・オフだけで、サーバーには何も送られません。</p>
+      <p><b>おおきさの数字について：</b>表示は0〜100の「めやす」です。マイクの感度は端末ごとにちがうため、正確な騒音計（デシベル）の代わりにはなりません。教室にあわせて赤いラインを調整してください。</p>
+      <p><b>先生・おうちのかたへ：</b>マイクの音はこの端末の中だけで処理し、録音・保存・送信は一切しません。端末（ブラウザ）に保存されるのは赤いラインの位置と音のオン・オフだけで、サーバーには何も送られません。</p>
     </div>
   </div>
 </div>
@@ -274,14 +252,14 @@ var KEY = "mm_oto_shingo";        /* 保存するのは {th, mute} のみ */
 var DB_MIN = -60, DB_MAX = -8;    /* この範囲を 0〜100 に対応させる */
 var RED_HOLD = 1500;              /* 赤を最低これだけ(ms)見せる */
 var YELLOW_RATIO = 0.85;          /* 黄＝赤の85% */
+var TH_MIN = 20, TH_MAX = 100;
 var BEEP_DUR = 550;               /* 警告音の長さ(ms) */
 var BEEP_REST = 500;              /* 警告音のあと計測を止める時間(ms) */
 
 var th = 70;
 var isMuted = false;
 var disp = 0;
-var count = 0;                    /* 赤になった回数（保存しない） */
-var armed = true;                 /* 黄より下に戻るまで次の赤を数えない */
+var armed = true;                 /* 黄より下に戻るまで次の警告音を鳴らさない */
 var redUntil = 0;
 var pauseUntil = 0;               /* 警告音対策：この時刻まで計測しない */
 var state = "g";
@@ -292,7 +270,7 @@ function loadCfg(){
   try{
     var o = JSON.parse(localStorage.getItem(KEY));
     if(o && typeof o === "object"){
-      if(typeof o.th === "number" && isFinite(o.th)) th = Math.min(100, Math.max(20, Math.round(o.th)));
+      if(typeof o.th === "number" && isFinite(o.th)) th = Math.min(TH_MAX, Math.max(TH_MIN, Math.round(o.th)));
       isMuted = !!o.mute;
     }
   }catch(e){}
@@ -344,8 +322,9 @@ function render(){
   document.body.className = "st-" + state + (isMuted ? " muted" : "");
 }
 function renderMarks(){
-  $("markY").style.left = "calc(" + yellowTh() + "% - 1.5px)";
-  $("markR").style.left = "calc(" + th + "% - 1.5px)";
+  $("markY").style.left = yellowTh() + "%";
+  $("markR").style.left = th + "%";
+  $("markR").setAttribute("aria-valuenow", String(th));
   $("thVal").textContent = String(th);
 }
 function loop(){
@@ -358,8 +337,6 @@ function loop(){
   if(!paused && disp >= th){
     redUntil = now + RED_HOLD;
     if(armed){
-      count++;
-      $("countNum").textContent = String(count);
       beep();
       armed = false;
     }
@@ -375,6 +352,41 @@ function loop(){
   render();
   requestAnimationFrame(loop);
 }
+
+/* ===== しきい値の変更（ドラッグ・キーボード） ===== */
+function setTh(v){
+  v = Math.min(TH_MAX, Math.max(TH_MIN, Math.round(v)));
+  if(v === th) return;
+  th = v;
+  renderMarks();
+  saveCfg();
+}
+(function(){
+  var bar = $("bar"), handle = $("markR");
+  function pctFromX(x){
+    var r = bar.getBoundingClientRect();
+    return (x - r.left) / r.width * 100;
+  }
+  handle.addEventListener("pointerdown", function(e){
+    e.preventDefault();
+    handle.setPointerCapture(e.pointerId);
+    handle.classList.add("drag");
+  });
+  handle.addEventListener("pointermove", function(e){
+    if(!handle.classList.contains("drag")) return;
+    setTh(pctFromX(e.clientX));
+  });
+  function endDrag(e){
+    handle.classList.remove("drag");
+  }
+  handle.addEventListener("pointerup", endDrag);
+  handle.addEventListener("pointercancel", endDrag);
+  handle.addEventListener("keydown", function(e){
+    var step = e.shiftKey ? 5 : 1;
+    if(e.key === "ArrowLeft" || e.key === "ArrowDown"){ setTh(th - step); e.preventDefault(); }
+    else if(e.key === "ArrowRight" || e.key === "ArrowUp"){ setTh(th + step); e.preventDefault(); }
+  });
+})();
 
 /* ===== マイク開始 ===== */
 function startMic(){
@@ -404,14 +416,6 @@ function startMic(){
 
 /* ===== ボタン結線 ===== */
 $("gateBtn").addEventListener("click", startMic);
-$("thSlider").addEventListener("input", function(){
-  th = Math.min(100, Math.max(20, Math.round(Number(this.value)) || 70));
-  renderMarks();
-  saveCfg();
-});
-$("resetBtn").addEventListener("click", function(){
-  count = 0; $("countNum").textContent = "0";
-});
 $("muteBtn").addEventListener("click", function(){
   isMuted = !isMuted; saveCfg(); render();
 });
@@ -425,7 +429,6 @@ $("help").addEventListener("click", function(e){ if(e.target === this) $("help")
 
 /* ===== 起動 ===== */
 loadCfg();
-$("thSlider").value = String(th);
 renderMarks();
 render();
 })();
