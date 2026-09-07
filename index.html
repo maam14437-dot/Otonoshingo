@@ -7,7 +7,7 @@
 <meta name="description" content="教室の音の大きさをマイクで計り、信号機の色で知らせるツール。音はこの端末の中だけで処理し、録音・送信はしません。">
 <style>
 :root{
-  --bg:#F2F3F1; --ink:#23282B; --muted:#6E7478; --line:#DDE0DD; --panel:#FFFFFF;
+  --bg:#F2F3F1; --ink:#23282B; --muted:#6E7478; --line:#DDE0DD;
   --green:#2FA95C; --yellow:#F2B824; --red:#E23B3F;
   --housing:#31363A;
 }
@@ -21,66 +21,73 @@ body{
   -webkit-tap-highlight-color:transparent; user-select:none; -webkit-user-select:none;
   transition:background .5s;
 }
-/* 状態に応じて画面全体をうすく染める（教室の後ろからでも分かる） */
 body.st-y{background:#F7EBC9}
 body.st-r{background:#F4D4D3}
 button{font-family:inherit; cursor:pointer}
+svg.ic{width:1.25em; height:1.25em; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:-0.25em}
 
-/* ── 上部バー ── */
-.topbar{
-  flex:none; display:flex; align-items:center; gap:10px;
-  padding:.5vw 1.2vw; border-bottom:1px solid var(--line);
+/* ── 右上の小さなアイコンボタン（バーなし） ── */
+.chrome{
+  position:fixed; top:12px; right:14px; z-index:50;
+  display:flex; gap:8px;
 }
-h1{font-weight:800; font-size:clamp(16px,2vw,34px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0}
-.topbar .sp{flex:1}
-.tbtn{
-  flex:none; white-space:nowrap; font-weight:700; font-size:clamp(12px,1.05vw,19px);
-  color:var(--ink); background:var(--panel); border:1.5px solid var(--line); border-radius:8px;
-  padding:.35vw 1vw; transition:border-color .12s;
+.ibtn{
+  width:clamp(36px,3.2vw,48px); height:clamp(36px,3.2vw,48px);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--muted); background:rgba(255,255,255,.7);
+  border:1.5px solid var(--line); border-radius:10px;
+  transition:color .12s, border-color .12s;
 }
-.tbtn:hover{border-color:var(--ink)}
+.ibtn:hover{color:var(--ink); border-color:var(--ink)}
+.ibtn svg.ic{width:55%; height:55%}
+#muteBtn .off{display:none}
+body.muted #muteBtn .on{display:none}
+body.muted #muteBtn .off{display:block}
 
-/* ── メイン ── */
-.main{
-  flex:1; min-height:0; display:grid; gap:1vw; padding:1vw;
-  grid-template-columns:auto 1fr;
-}
-.panel{
-  background:var(--panel); border:1px solid var(--line); border-radius:14px;
-  padding:1.2vw 1.6vw; min-height:0; min-width:0; display:flex; flex-direction:column;
+.appname{
+  position:fixed; top:14px; left:16px; z-index:50;
+  font-weight:800; font-size:clamp(13px,1.2vw,20px); color:var(--muted);
 }
 
-/* ── 左：信号機 ── */
-#pSignal{align-items:center; justify-content:center}
+/* ── 中央ステージ：信号機＋数字が主役 ── */
+.stage{
+  flex:1; min-height:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:3vh;
+  padding:clamp(56px,7vh,80px) 3vw 1vh;
+}
+.hero{
+  display:flex; align-items:center; justify-content:center;
+  gap:clamp(24px,6vw,120px);
+}
 .housing{
-  background:var(--housing); border-radius:2.2vw;
-  padding:2vh 1.6vw; display:flex; flex-direction:column; gap:2.2vh;
+  background:var(--housing); border-radius:2.4vh;
+  padding:2.4vh 2vh; display:flex; flex-direction:column; gap:2.4vh;
   box-shadow:inset 0 2px 6px rgba(255,255,255,.08), 0 4px 16px rgba(0,0,0,.18);
 }
 .lamp{
-  width:clamp(70px,15vh,180px); height:clamp(70px,15vh,180px); border-radius:50%;
+  width:clamp(70px,17vh,200px); height:clamp(70px,17vh,200px); border-radius:50%;
   background:#1E2225; transition:background .25s, box-shadow .25s;
 }
 body.st-g .lamp.g{background:var(--green); box-shadow:0 0 6vh 1vh rgba(47,169,92,.55)}
 body.st-y .lamp.y{background:var(--yellow); box-shadow:0 0 6vh 1vh rgba(242,184,36,.55)}
 body.st-r .lamp.r{background:var(--red); box-shadow:0 0 6vh 1vh rgba(226,59,63,.6)}
-.sig-word{
-  margin-top:1.6vh; font-weight:800; font-size:clamp(20px,2.6vw,48px); min-height:1.3em;
+.reading{display:flex; flex-direction:column; align-items:center; text-align:center}
+.word{
+  font-weight:800; font-size:clamp(26px,4.5vw,84px); line-height:1.2; min-height:1.25em;
 }
-body.st-g #sigWord{color:var(--green)}
-body.st-y #sigWord{color:#B8860B}
-body.st-r #sigWord{color:var(--red)}
-
-/* ── 右：メーターと設定 ── */
-#pMeter{gap:1.6vh}
-.now-label{font-weight:700; font-size:clamp(14px,1.4vw,26px); color:var(--muted)}
-.now-num{
+body.st-g .word{color:var(--green)}
+body.st-y .word{color:#B8860B}
+body.st-r .word{color:var(--red)}
+.num{
   font-weight:800; line-height:1; font-variant-numeric:tabular-nums;
-  font-size:clamp(70px,11vw,220px);
+  font-size:clamp(96px,22vh,320px);
 }
+.num-label{font-weight:700; font-size:clamp(12px,1.3vw,22px); color:var(--muted); margin-top:.6vh}
+
+/* ── バーメーター ── */
 .bar{
-  position:relative; height:clamp(26px,4.5vh,52px);
-  background:#E8EAE8; border-radius:999px; overflow:visible;
+  position:relative; width:min(84vw,1400px); height:clamp(20px,3.4vh,40px);
+  background:#E4E6E4; border-radius:999px;
 }
 .bar .fill{
   position:absolute; inset:0 auto 0 0; width:0%; border-radius:999px;
@@ -88,44 +95,51 @@ body.st-r #sigWord{color:var(--red)}
 }
 body.st-y .bar .fill{background:var(--yellow)}
 body.st-r .bar .fill{background:var(--red)}
-.mark{
-  position:absolute; top:-8px; bottom:-8px; width:3px; border-radius:2px;
-}
+.mark{position:absolute; top:-7px; bottom:-7px; width:3px; border-radius:2px}
 .mark.y{background:var(--yellow)}
 .mark.r{background:var(--red)}
-.count-row{
-  display:flex; align-items:baseline; gap:1vw; flex-wrap:wrap;
-  font-weight:700; font-size:clamp(15px,1.6vw,30px);
+
+/* ── 下部の設定帯（常時表示・細く） ── */
+.bottom{
+  flex:none; display:flex; align-items:center; gap:1.6vw; flex-wrap:wrap;
+  padding:1vh 2.4vw; border-top:1px solid var(--line);
+  font-weight:700; font-size:clamp(13px,1.3vw,24px);
 }
-.count-row .n{
-  font-weight:800; font-size:clamp(34px,4.5vw,90px); line-height:1;
-  font-variant-numeric:tabular-nums; color:var(--red);
+.bottom label{white-space:nowrap}
+.bottom input[type=range]{
+  flex:1; min-width:140px; height:8px; appearance:none; -webkit-appearance:none;
+  background:#E4E6E4; border-radius:999px; outline:none;
 }
-.count-row .reset{
-  border:none; background:none; color:var(--muted); font-weight:700;
-  font-size:clamp(12px,1.1vw,20px); text-decoration:underline; padding:4px;
-}
-.count-row .reset:hover{color:var(--ink)}
-.setting{
-  margin-top:auto; border-top:1px solid var(--line); padding-top:1.4vh;
-  display:flex; align-items:center; gap:1.2vw; flex-wrap:wrap;
-}
-.setting label{font-weight:700; font-size:clamp(14px,1.4vw,26px); white-space:nowrap}
-.setting input[type=range]{
-  flex:1; min-width:160px; height:8px; appearance:none; -webkit-appearance:none;
-  background:#E8EAE8; border-radius:999px; outline:none;
-}
-.setting input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none; width:30px; height:30px; border-radius:50%;
+.bottom input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:28px; height:28px; border-radius:50%;
   background:var(--ink); border:none;
 }
-.setting input[type=range]::-moz-range-thumb{
-  width:30px; height:30px; border-radius:50%; background:var(--ink); border:none;
+.bottom input[type=range]::-moz-range-thumb{
+  width:28px; height:28px; border-radius:50%; background:var(--ink); border:none;
 }
-.setting input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(35,40,43,.3)}
-.setting .val{
-  font-weight:800; font-size:clamp(18px,2vw,38px); font-variant-numeric:tabular-nums;
-  min-width:2.4em; text-align:right;
+.bottom input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(35,40,43,.3)}
+.bottom .val{
+  font-weight:800; font-size:clamp(16px,1.8vw,32px); font-variant-numeric:tabular-nums;
+  min-width:2.2em; text-align:right;
+}
+.count{
+  display:flex; align-items:baseline; gap:.5em; white-space:nowrap;
+  border-left:1px solid var(--line); padding-left:1.6vw;
+}
+.count .n{
+  font-weight:800; font-size:clamp(22px,2.6vw,48px); line-height:1;
+  font-variant-numeric:tabular-nums; color:var(--red);
+}
+.reset{
+  border:none; background:none; color:var(--muted); font-weight:700;
+  font-size:clamp(12px,1.1vw,20px); padding:4px; white-space:nowrap;
+}
+.reset:hover{color:var(--ink)}
+
+/* ── フッター ── */
+.foot{
+  flex:none; text-align:center; font-size:clamp(9px,.8vw,14px); font-weight:600;
+  color:var(--muted); padding:.3vh 8px .6vh;
 }
 
 /* ── はじめる／エラー オーバーレイ ── */
@@ -138,8 +152,9 @@ body.st-r .bar .fill{background:var(--red)}
 #gate .t{font-weight:800; font-size:clamp(22px,3.2vw,56px)}
 #gate .d{font-weight:700; font-size:clamp(13px,1.3vw,22px); color:var(--muted); line-height:1.8; max-width:34em}
 #gateBtn{
+  display:flex; align-items:center; gap:.5em;
   font-weight:800; font-size:clamp(20px,2.6vw,46px); color:#fff;
-  background:var(--ink); border:none; border-radius:14px; padding:.6em 1.6em;
+  background:var(--ink); border:none; border-radius:14px; padding:.55em 1.4em;
 }
 #gateBtn:active{transform:translateY(2px)}
 #gateErr{font-weight:700; font-size:clamp(13px,1.3vw,22px); color:var(--red); line-height:1.8; max-width:36em}
@@ -154,22 +169,17 @@ body.st-r .bar .fill{background:var(--red)}
 #help .body{font-size:.9rem; line-height:1.85; color:#4A5054; font-weight:600}
 #help .body p{margin-bottom:10px}
 
-/* ── フッター ── */
-.foot{
-  flex:none; text-align:center; font-size:clamp(10px,.85vw,15px); font-weight:600;
-  color:var(--muted); padding:.3vw 8px .5vw;
-}
-
 /* ── 縦画面 ── */
 @media (max-aspect-ratio:1/1){
-  .main{grid-template-columns:1fr; grid-template-rows:auto 1fr}
-  #pSignal .housing{flex-direction:row; padding:1.4vh 4vw; gap:4vw}
-  .lamp{width:clamp(54px,16vw,120px); height:clamp(54px,16vw,120px)}
-  body.st-g .lamp.g,body.st-y .lamp.y,body.st-r .lamp.r{box-shadow:0 0 5vw 1vw rgba(0,0,0,0)}
-  body.st-g .lamp.g{box-shadow:0 0 5vw .8vw rgba(47,169,92,.55)}
-  body.st-y .lamp.y{box-shadow:0 0 5vw .8vw rgba(242,184,36,.55)}
-  body.st-r .lamp.r{box-shadow:0 0 5vw .8vw rgba(226,59,63,.6)}
-  .now-num{font-size:clamp(60px,20vw,140px)}
+  .hero{flex-direction:column; gap:2vh}
+  .housing{flex-direction:row; padding:1.6vh 4vw; gap:4vw}
+  .lamp{width:clamp(52px,15vw,110px); height:clamp(52px,15vw,110px)}
+  .num{font-size:clamp(72px,24vw,180px)}
+  .word{font-size:clamp(22px,7vw,48px)}
+  .stage{padding-top:clamp(52px,7vh,72px); gap:2vh}
+  .bar{width:92vw}
+  .bottom{gap:3vw; padding:1vh 4vw}
+  .count{padding-left:3vw}
 }
 @media (prefers-reduced-motion:reduce){
   body,.lamp,.bar .fill{transition:none}
@@ -178,44 +188,53 @@ body.st-r .bar .fill{background:var(--red)}
 </head>
 <body class="st-g">
 
-<div class="topbar">
-  <h1>おとの しんごうき</h1>
-  <span class="sp"></span>
-  <button class="tbtn" id="muteBtn" type="button" aria-label="けいこくおんの オンオフ">🔊 おと</button>
-  <button class="tbtn" id="helpBtn" type="button">？ せつめい</button>
-  <button class="tbtn" id="fsBtn" type="button">⛶ ぜんがめん</button>
+<div class="appname">おとの しんごうき</div>
+<div class="chrome">
+  <button class="ibtn" id="muteBtn" type="button" aria-label="けいこくおんの オンオフ">
+    <svg class="ic on" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+    <svg class="ic off" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="22" y1="9" x2="16" y2="15"/><line x1="16" y1="9" x2="22" y2="15"/></svg>
+  </button>
+  <button class="ibtn" id="helpBtn" type="button" aria-label="このアプリのせつめい">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+  </button>
+  <button class="ibtn" id="fsBtn" type="button" aria-label="ぜんがめん">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+  </button>
 </div>
 
-<div class="main">
-  <section class="panel" id="pSignal" aria-label="しんごうき">
-    <div class="housing">
+<main class="stage">
+  <div class="hero">
+    <div class="housing" aria-hidden="true">
       <div class="lamp r"></div>
       <div class="lamp y"></div>
       <div class="lamp g"></div>
     </div>
-    <div class="sig-word" id="sigWord">しずか</div>
-  </section>
+    <div class="reading">
+      <div class="word" id="sigWord">しずか</div>
+      <div class="num" id="nowNum">0</div>
+      <div class="num-label">おとの おおきさ（めやす）</div>
+    </div>
+  </div>
+  <div class="bar">
+    <div class="fill" id="barFill"></div>
+    <div class="mark y" id="markY"></div>
+    <div class="mark r" id="markR"></div>
+  </div>
+</main>
 
-  <section class="panel" id="pMeter" aria-label="おとの おおきさ">
-    <div class="now-label">いまの おおきさ（めやす）</div>
-    <div class="now-num" id="nowNum">0</div>
-    <div class="bar">
-      <div class="fill" id="barFill"></div>
-      <div class="mark y" id="markY"></div>
-      <div class="mark r" id="markR"></div>
-    </div>
-    <div class="count-row">
-      <span>あかに なった かいすう</span>
-      <span class="n" id="countNum">0</span>
-      <span>かい</span>
-      <button class="reset" id="resetBtn" type="button">0に もどす</button>
-    </div>
-    <div class="setting">
-      <label for="thSlider">あかに なる おおきさ</label>
-      <input type="range" id="thSlider" min="20" max="100" step="1" value="70">
-      <span class="val" id="thVal">70</span>
-    </div>
-  </section>
+<div class="bottom">
+  <label for="thSlider">あかに なる おおきさ</label>
+  <input type="range" id="thSlider" min="20" max="100" step="1" value="70">
+  <span class="val" id="thVal">70</span>
+  <span class="count">
+    <span>あかに なった かいすう</span>
+    <span class="n" id="countNum">0</span>
+    <span>かい</span>
+  </span>
+  <button class="reset" id="resetBtn" type="button">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    0に もどす
+  </button>
 </div>
 
 <div class="foot">マイクの おとは この たんまつの なかだけで つかいます。ろくおんや そうしんは しません。</div>
@@ -223,7 +242,10 @@ body.st-r .bar .fill{background:var(--red)}
 <div id="gate">
   <div class="t">おとの しんごうき</div>
   <div class="d">きょうしつの おとの おおきさを はかって、しんごうの いろで しらせます。<br>はじめると、ブラウザが「マイクを つかって いいですか」と きくので、「きょか」を おして ください。</div>
-  <button id="gateBtn" type="button">▶ マイクを つかって はじめる</button>
+  <button id="gateBtn" type="button">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+    マイクを つかって はじめる
+  </button>
   <div id="gateErr" hidden></div>
 </div>
 
@@ -233,7 +255,8 @@ body.st-r .bar .fill{background:var(--red)}
     <h2>このアプリについて</h2>
     <div class="body">
       <p>教室の音の大きさをマイクで計り、信号機の色（青→黄→赤）で知らせるツールです。教室の大型モニタに映してお使いください。</p>
-      <p><b>つかいかた：</b>スライダーで「あかに なる おおきさ」を決めます。その85%をこえると黄色、設定値をこえると赤になり、警告音が1回鳴って回数が数えられます。回数は保存されず、「0に もどす」やページの再読み込みでリセットされます。一度黄色より下に下がるまで、次の赤は数えません。</p>
+      <p><b>つかいかた：</b>下のスライダーで「あかに なる おおきさ」を決めます。その85%をこえると黄色、設定値をこえると赤になり、警告音が1回鳴って回数が数えられます。回数は保存されず、「0に もどす」やページの再読み込みでリセットされます。一度黄色より下に下がるまで、次の赤は数えません。</p>
+      <p><b>けいそくの一時停止：</b>警告音を マイクが拾わないよう、警告音のあいだと そのあと0.5秒は計測を止め、そのあと自動で再開します。</p>
       <p><b>おおきさの数字について：</b>表示は0〜100の「めやす」です。マイクの感度は端末ごとにちがうため、正確な騒音計（デシベル）の代わりにはなりません。教室にあわせてスライダーで調整してください。</p>
       <p><b>先生・おうちのかたへ：</b>マイクの音はこの端末の中だけで処理し、録音・保存・送信は一切しません。端末（ブラウザ）に保存されるのはスライダーの設定値と音のオン・オフだけで、サーバーには何も送られません。</p>
     </div>
@@ -250,13 +273,16 @@ var KEY = "mm_oto_shingo";        /* 保存するのは {th, mute} のみ */
 var DB_MIN = -60, DB_MAX = -8;    /* この範囲を 0〜100 に対応させる */
 var RED_HOLD = 1500;              /* 赤を最低これだけ(ms)見せる */
 var YELLOW_RATIO = 0.85;          /* 黄＝赤の85% */
+var BEEP_DUR = 550;               /* 警告音の長さ(ms) */
+var BEEP_REST = 500;              /* 警告音のあと計測を止める時間(ms) */
 
-var th = 70;                      /* 赤のしきい値(0〜100) */
+var th = 70;
 var isMuted = false;
-var disp = 0;                     /* なめらか表示用の現在値 */
+var disp = 0;
 var count = 0;                    /* 赤になった回数（保存しない） */
 var armed = true;                 /* 黄より下に戻るまで次の赤を数えない */
-var redUntil = 0;                 /* 赤の表示保持期限 */
+var redUntil = 0;
+var pauseUntil = 0;               /* 警告音対策：この時刻まで計測しない */
 var state = "g";
 var analyser = null, dataBuf = null, actx = null;
 
@@ -276,6 +302,8 @@ function saveCfg(){
 
 /* ===== 警告音（生成音・端末内） ===== */
 function beep(){
+  /* 音を鳴らさない設定でも、拾いこみ防止の一時停止は同じ長さにそろえる */
+  pauseUntil = performance.now() + BEEP_DUR + BEEP_REST;
   if(isMuted || !actx) return;
   try{
     var o = actx.createOscillator(), g = actx.createGain();
@@ -283,9 +311,9 @@ function beep(){
     var t = actx.currentTime;
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(0.25, t + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    g.gain.exponentialRampToValueAtTime(0.001, t + BEEP_DUR/1000);
     o.connect(g); g.connect(actx.destination);
-    o.start(t); o.stop(t + 0.55);
+    o.start(t); o.stop(t + BEEP_DUR/1000 + 0.05);
   }catch(e){}
 }
 
@@ -312,7 +340,7 @@ function render(){
   $("barFill").style.width = disp + "%";
   var word = state === "r" ? "うるさい！" : (state === "y" ? "ちゅうい" : "しずか");
   $("sigWord").textContent = word;
-  document.body.className = "st-" + state;
+  document.body.className = "st-" + state + (isMuted ? " muted" : "");
 }
 function renderMarks(){
   $("markY").style.left = "calc(" + yellowTh() + "% - 1.5px)";
@@ -320,12 +348,13 @@ function renderMarks(){
   $("thVal").textContent = String(th);
 }
 function loop(){
-  var target = levelNow();
-  /* 上がるときは速く、下がるときはゆっくり（読みやすさ優先） */
+  var now = performance.now();
+  var paused = now < pauseUntil;
+  /* 警告音のあいだ＋0.5秒は計測せず、メーターはゆっくり下げる */
+  var target = paused ? 0 : levelNow();
   disp += (target - disp) * (target > disp ? 0.4 : 0.07);
 
-  var now = performance.now();
-  if(disp >= th){
+  if(!paused && disp >= th){
     redUntil = now + RED_HOLD;
     if(armed){
       count++;
@@ -382,9 +411,8 @@ $("thSlider").addEventListener("input", function(){
 $("resetBtn").addEventListener("click", function(){
   count = 0; $("countNum").textContent = "0";
 });
-function applyMuteBtn(){ $("muteBtn").textContent = isMuted ? "🔇 おと" : "🔊 おと"; }
 $("muteBtn").addEventListener("click", function(){
-  isMuted = !isMuted; saveCfg(); applyMuteBtn();
+  isMuted = !isMuted; saveCfg(); render();
 });
 $("fsBtn").addEventListener("click", function(){
   if(document.fullscreenElement){ document.exitFullscreen(); }
@@ -398,7 +426,6 @@ $("help").addEventListener("click", function(e){ if(e.target === this) $("help")
 loadCfg();
 $("thSlider").value = String(th);
 renderMarks();
-applyMuteBtn();
 render();
 })();
 </script>
