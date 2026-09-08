@@ -99,7 +99,7 @@ body.st-r .word{color:#B02A2E}
 .face svg{
   width:calc(var(--lamp)*3 + 8vh); height:calc(var(--lamp)*3 + 8vh);
   display:none;
-  fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round;
+  fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round;   /* 線の太さは全段階で一定 */
 }
 .face.f0 .s0{display:block; stroke:#1F7A41}
 .face.f1 .s1{display:block; stroke:#4F7739}
@@ -108,9 +108,9 @@ body.st-r .word{color:#B02A2E}
 .face.f4 .s4{display:block; stroke:#4F627E}
 .face.f5 .s5{display:block; stroke:#48608E}
 .face.f6 .s6{display:block; stroke:#425D9D}
-.face.f7 .s7{display:block; stroke:#3C59AC; stroke-width:1.6}
-.face.f8 .s8{display:block; stroke:#3455BA; stroke-width:1.7}
-.face.f9 .s9{display:block; stroke:#2A50C4; stroke-width:1.85}
+.face.f7 .s7{display:block; stroke:#3C59AC}
+.face.f8 .s8{display:block; stroke:#3455BA}
+.face.f9 .s9{display:block; stroke:#2A50C4}
 .face:focus-visible{outline:3px solid rgba(35,40,43,.45); outline-offset:6px; border-radius:50%}
 
 /* ── バーメーター（赤ラインをつかんで しきい値を動かす） ── */
