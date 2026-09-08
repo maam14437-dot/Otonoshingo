@@ -107,6 +107,8 @@ body.st-r .word{color:#B02A2E}
 .feye{fill:#664500}
 .fdrop{fill:#2F6FD0}
 .fstream{fill:none; stroke:#2F6FD0; stroke-width:5; stroke-linecap:round}
+.fmouthfill{fill:#664500; stroke:#664500; stroke-width:5; stroke-linejoin:round}
+.fcheek{fill:#FF8A8A}
 .face:focus-visible{outline:3px solid rgba(35,40,43,.45); outline-offset:6px; border-radius:50%}
 
 /* ── バーメーター（赤ラインをつかんで しきい値を動かす） ── */
@@ -263,10 +265,14 @@ body.st-r .bar .fill{background:var(--red)}
     <button class="face f9" id="face" type="button" aria-label="せんせいの かお（おすと さいしょの ないた かおに もどる）">
       <svg viewBox="0 0 120 120" aria-hidden="true">
         <circle class="fskin" cx="60" cy="62" r="46"/>
+        <circle id="fCheekL" class="fcheek" cx="32" cy="69" r="6" style="display:none"/>
+        <circle id="fCheekR" class="fcheek" cx="88" cy="69" r="6" style="display:none"/>
         <path id="fBrowL" class="fink" d="" style="display:none"/>
         <path id="fBrowR" class="fink" d="" style="display:none"/>
         <circle id="fEyeL" class="feye" cx="42" cy="54" r="6"/>
         <circle id="fEyeR" class="feye" cx="78" cy="54" r="6"/>
+        <ellipse id="fEyeWL" class="feye" cx="42" cy="53" rx="5.5" ry="8" style="display:none"/>
+        <ellipse id="fEyeWR" class="feye" cx="78" cy="53" rx="5.5" ry="8" style="display:none"/>
         <path id="fLidL" class="fink" d="M34 54 q8 -8 16 0" style="display:none"/>
         <path id="fLidR" class="fink" d="M70 54 q8 -8 16 0" style="display:none"/>
         <path id="fDropL" class="fdrop" d="M42 63 C39 69 39 74 42 76 C45 74 45 69 42 63 Z" style="display:none"/>
@@ -274,6 +280,7 @@ body.st-r .bar .fill{background:var(--red)}
         <path id="fStreamL" class="fstream" d="" style="display:none"/>
         <path id="fStreamR" class="fstream" d="" style="display:none"/>
         <path id="fMouth" class="fink" d="M39 85 Q60 65 81 85"/>
+        <path id="fMouthFill" class="fmouthfill" d="M34 78 Q60 114 86 78 Q60 87 34 78 Z" style="display:none"/>
       </svg>
     </button>
   </div>
@@ -347,33 +354,66 @@ var lastStepAt = 0;               /* 2分タイマーの起点 */
 var analyser = null, dataBuf = null, actx = null;
 
 /* かおの段階表：c=口の曲がり(+笑い/−への字) w=口の半幅 s=困り眉の傾き
-   shut=目を閉じる tear=涙 0なし/1左しずく/2両しずく/3短い涙/4長い涙 */
+   e=丸目の半径 k=ほほの赤みの半径(0=なし) laugh=口を開けて笑う
+   eye=目の形 "dot"丸 / "wide"縦長の大きな目 / "happy"うれしい閉じ目 /
+       "happyBig"大きなうれしい閉じ目 / "cry"泣きの閉じ目
+   tear=涙 0なし/1左しずく/3短い涙/4長い涙
+   時系列（大泣きスタート＝sadLevel9から回復）：
+   1(lv9)大泣き → 2(lv8)泣き → 3(lv7)への字と涙 → 4(lv6)真顔
+   → 5〜7 口の笑いが大きく・ほほ → 8(lv2)縦長の目 → 9(lv1)閉じ目の笑い
+   → 最終(lv0)口を開けた最大の笑顔 */
 var FACE = [
-  {c: 17, w:22, s:0, shut:false, tear:0},   /* 0 にこにこ */
-  {c: 12, w:21, s:0, shut:false, tear:0},   /* 1 わらい */
-  {c:  6, w:20, s:0, shut:false, tear:0},   /* 2 うすいわらい */
-  {c:  0, w:19, s:0, shut:false, tear:0},   /* 3 まがお */
-  {c: -6, w:19, s:2, shut:false, tear:0},   /* 4 への字 */
-  {c:-10, w:19, s:4, shut:false, tear:0},   /* 5 こまり眉 */
-  {c:-13, w:19, s:5, shut:false, tear:1},   /* 6 涙ひとつぶ */
-  {c:-15, w:19, s:6, shut:false, tear:2},   /* 7 両目に涙 */
-  {c:-17, w:20, s:7, shut:true,  tear:3},   /* 8 泣き */
-  {c:-20, w:21, s:8, shut:true,  tear:4}    /* 9 大泣き */
+  {c:  0, w: 0, s:0, e:6,   k:7, eye:"happyBig", tear:0, laugh:true },  /* lv0 最大の笑顔 */
+  {c: 22, w:25, s:0, e:6,   k:6, eye:"happy",    tear:0, laugh:false},  /* lv1 閉じ目の笑い */
+  {c: 17, w:23, s:0, e:6,   k:5, eye:"wide",     tear:0, laugh:false},  /* lv2 縦長の目の笑み */
+  {c: 12, w:22, s:0, e:6.6, k:4, eye:"dot",      tear:0, laugh:false},  /* lv3 笑み */
+  {c:  8, w:21, s:0, e:6.3, k:3, eye:"dot",      tear:0, laugh:false},  /* lv4 うすい笑み＋ほほ */
+  {c:  5, w:20, s:0, e:6,   k:0, eye:"dot",      tear:0, laugh:false},  /* lv5 ほんのり笑み */
+  {c:  0, w:19, s:0, e:6,   k:0, eye:"dot",      tear:0, laugh:false},  /* lv6 真顔（4段階目） */
+  {c: -8, w:19, s:4, e:6,   k:0, eye:"dot",      tear:1, laugh:false},  /* lv7 への字と涙 */
+  {c:-14, w:20, s:6, e:6,   k:0, eye:"cry",      tear:3, laugh:false},  /* lv8 泣き */
+  {c:-20, w:21, s:8, e:6,   k:0, eye:"cry",      tear:4, laugh:false}   /* lv9 大泣き（スタート） */
 ];
+/* 閉じ目の形（左・右） */
+var LIDS = {
+  cry:      ["M34 54 q8 -8 16 0",   "M70 54 q8 -8 16 0"],
+  happy:    ["M33 55 q9 -9 18 0",   "M69 55 q9 -9 18 0"],
+  happyBig: ["M31 55 q11 -11 22 0", "M67 55 q11 -11 22 0"]
+};
 function show(id, on){ $(id).style.display = on ? "" : "none"; }
 function updateFace(){
   /* 大泣き(9)からスタートし、2分ごとに1段階ずつ笑顔(0)へ。赤で1段階もどる */
   var lv = Math.min(9, Math.max(0, sadLevel));
   var f = FACE[lv];
   $("face").className = "face f" + lv;
-  $("fMouth").setAttribute("d", "M" + (60-f.w) + " 85 Q60 " + (85+f.c) + " " + (60+f.w) + " 85");
+  show("fMouth", !f.laugh);
+  show("fMouthFill", f.laugh);
+  if(!f.laugh){
+    $("fMouth").setAttribute("d", "M" + (60-f.w) + " 85 Q60 " + (85+f.c) + " " + (60+f.w) + " 85");
+  }
   show("fBrowL", f.s > 0); show("fBrowR", f.s > 0);
   if(f.s > 0){
     $("fBrowL").setAttribute("d", "M33 42 L48 " + (42 - f.s));      /* 外側が下がる困り眉 */
     $("fBrowR").setAttribute("d", "M87 42 L72 " + (42 - f.s));
   }
-  show("fEyeL", !f.shut); show("fEyeR", !f.shut);
-  show("fLidL", f.shut);  show("fLidR", f.shut);
+  /* 目：丸 / 縦長 / 閉じ目（種類ごとに切りかえ） */
+  show("fEyeL", f.eye === "dot"); show("fEyeR", f.eye === "dot");
+  if(f.eye === "dot"){
+    $("fEyeL").setAttribute("r", f.e);
+    $("fEyeR").setAttribute("r", f.e);
+  }
+  show("fEyeWL", f.eye === "wide"); show("fEyeWR", f.eye === "wide");
+  var lid = LIDS[f.eye];
+  show("fLidL", !!lid); show("fLidR", !!lid);
+  if(lid){
+    $("fLidL").setAttribute("d", lid[0]);
+    $("fLidR").setAttribute("d", lid[1]);
+  }
+  show("fCheekL", f.k > 0); show("fCheekR", f.k > 0);
+  if(f.k > 0){
+    $("fCheekL").setAttribute("r", f.k);
+    $("fCheekR").setAttribute("r", f.k);
+  }
   show("fDropL", f.tear === 1 || f.tear === 2);
   show("fDropR", f.tear === 2);
   var st = f.tear >= 3;
