@@ -89,7 +89,9 @@ body.st-r .word{color:#B02A2E}
 .num-label{font-weight:700; font-size:clamp(12px,1.3vw,22px); color:var(--muted); margin-top:.6vh}
 
 /* ── かおイラスト（大泣きから2分ごとに笑顔へ。赤で1段階泣き顔にもどる） ──
-   色は 段階0の緑 → 灰 → 段階9の青 へ深まる */
+   ユニバーサルデザイン方針：太い輪郭のピクトグラム調。段階は色ではなく
+   「口の曲がり・困り眉・涙」の形で伝える（色覚特性に依存しない）。
+   線の太さは全段階・全パーツで一定（7.5/120 ＝ 旧1.5/24 と同じ比率） */
 .face{
   flex:none; border:none; background:none; padding:0; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
@@ -98,19 +100,13 @@ body.st-r .word{color:#B02A2E}
    ※height:100%とwidth:autoの組み合わせはSafariで幅0になるため、両辺を明示指定 */
 .face svg{
   width:calc(var(--lamp)*3 + 8vh); height:calc(var(--lamp)*3 + 8vh);
-  display:none;
-  fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round;   /* 線の太さは全段階で一定 */
+  display:block;
 }
-.face.f0 .s0{display:block; stroke:#1F7A41}
-.face.f1 .s1{display:block; stroke:#4F7739}
-.face.f2 .s2{display:block; stroke:#5E6B55}
-.face.f3 .s3{display:block; stroke:#576570}
-.face.f4 .s4{display:block; stroke:#4F627E}
-.face.f5 .s5{display:block; stroke:#48608E}
-.face.f6 .s6{display:block; stroke:#425D9D}
-.face.f7 .s7{display:block; stroke:#3C59AC}
-.face.f8 .s8{display:block; stroke:#3455BA}
-.face.f9 .s9{display:block; stroke:#2A50C4}
+.fskin{fill:#FFFFFF; stroke:var(--ink); stroke-width:7.5}
+.fink{fill:none; stroke:var(--ink); stroke-width:7.5; stroke-linecap:round; stroke-linejoin:round}
+.feye{fill:var(--ink)}
+.fdrop{fill:#2F6FD0}
+.fstream{fill:none; stroke:#2F6FD0; stroke-width:7.5; stroke-linecap:round}
 .face:focus-visible{outline:3px solid rgba(35,40,43,.45); outline-offset:6px; border-radius:50%}
 
 /* ── バーメーター（赤ラインをつかんで しきい値を動かす） ── */
@@ -265,16 +261,20 @@ body.st-r .bar .fill{background:var(--red)}
       <div class="num-label">おとの おおきさ（めやす）</div>
     </div>
     <button class="face f9" id="face" type="button" aria-label="せんせいの かお（おすと さいしょの ないた かおに もどる）">
-      <svg class="s0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2.2 4 2.2 4-2.2 4-2.2"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
-      <svg class="s1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.5 14.6s1.4 1.3 3.5 1.3 3.5-1.3 3.5-1.3"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
-      <svg class="s2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8.5" y1="15" x2="15.5" y2="15"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
-      <svg class="s3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15.5 15.7s-1.4-1.3-3.5-1.3-3.5 1.3-3.5 1.3"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
-      <svg class="s4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.2s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.6 8.6l2.4-.7"/><path d="M16.4 8.6l-2.4-.7"/><line x1="9" y1="10" x2="9.01" y2="10"/><line x1="15" y1="10" x2="15.01" y2="10"/></svg>
-      <svg class="s5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.5s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.4 9l2.6-1.1"/><path d="M16.6 9l-2.6-1.1"/><line x1="9" y1="10.2" x2="9.01" y2="10.2"/><line x1="15" y1="10.2" x2="15.01" y2="10.2"/></svg>
-      <svg class="s6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.5s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.4 9l2.6-1.1"/><path d="M16.6 9l-2.6-1.1"/><line x1="9" y1="10.2" x2="9.01" y2="10.2"/><line x1="15" y1="10.2" x2="15.01" y2="10.2"/><path d="M9 11.6c-.5.9-.5 1.7 0 2 .5-.3.5-1.1 0-2"/></svg>
-      <svg class="s7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.2 16.8s-1.6-2.4-4.2-2.4-4.2 2.4-4.2 2.4"/><path d="M7.3 9.2l2.7-1.3"/><path d="M16.7 9.2l-2.7-1.3"/><line x1="9" y1="10.3" x2="9.01" y2="10.3"/><line x1="15" y1="10.3" x2="15.01" y2="10.3"/><path d="M9 11.7c-.5.9-.5 1.7 0 2 .5-.3.5-1.1 0-2"/><path d="M15 11.7c-.5.9-.5 1.7 0 2 .5-.3.5-1.1 0-2"/></svg>
-      <svg class="s8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.2 16.8s-1.6-2.4-4.2-2.4-4.2 2.4-4.2 2.4"/><path d="M7.2 9.2l2.8-1.4"/><path d="M16.8 9.2l-2.8-1.4"/><path d="M8.1 10.6q.9-1.1 1.8 0"/><path d="M14.1 10.6q.9-1.1 1.8 0"/><path d="M9 11.6v2.4"/><path d="M15 11.6v2.4"/></svg>
-      <svg class="s9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.4 17.1s-1.7-2.6-4.4-2.6-4.4 2.6-4.4 2.6"/><path d="M7 9.4l3-1.7"/><path d="M17 9.4l-3-1.7"/><path d="M8 10.7q1-1.2 2 0"/><path d="M14 10.7q1-1.2 2 0"/><path d="M9 11.6v3.2"/><path d="M15 11.6v3.2"/><path d="M7.5 12.4v1.8"/><path d="M16.5 12.4v1.8"/></svg>
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="fskin" cx="60" cy="62" r="46"/>
+        <path id="fBrowL" class="fink" d="" style="display:none"/>
+        <path id="fBrowR" class="fink" d="" style="display:none"/>
+        <circle id="fEyeL" class="feye" cx="42" cy="54" r="6"/>
+        <circle id="fEyeR" class="feye" cx="78" cy="54" r="6"/>
+        <path id="fLidL" class="fink" d="M34 54 q8 -8 16 0" style="display:none"/>
+        <path id="fLidR" class="fink" d="M70 54 q8 -8 16 0" style="display:none"/>
+        <path id="fDropL" class="fdrop" d="M42 63 C39 69 39 74 42 76 C45 74 45 69 42 63 Z" style="display:none"/>
+        <path id="fDropR" class="fdrop" d="M78 63 C75 69 75 74 78 76 C81 74 81 69 78 63 Z" style="display:none"/>
+        <path id="fStreamL" class="fstream" d="" style="display:none"/>
+        <path id="fStreamR" class="fstream" d="" style="display:none"/>
+        <path id="fMouth" class="fink" d="M39 85 Q60 65 81 85"/>
+      </svg>
     </button>
   </div>
   <div class="barwrap">
@@ -346,10 +346,48 @@ var sadLevel = 9;                 /* 0=にこにこ 〜 9=大泣き。泣き顔�
 var lastStepAt = 0;               /* 2分タイマーの起点 */
 var analyser = null, dataBuf = null, actx = null;
 
+/* かおの段階表：c=口の曲がり(+笑い/−への字) w=口の半幅 s=困り眉の傾き
+   shut=目を閉じる tear=涙 0なし/1左しずく/2両しずく/3短い涙/4長い涙 */
+var FACE = [
+  {c: 17, w:22, s:0, shut:false, tear:0},   /* 0 にこにこ */
+  {c: 12, w:21, s:0, shut:false, tear:0},   /* 1 わらい */
+  {c:  6, w:20, s:0, shut:false, tear:0},   /* 2 うすいわらい */
+  {c:  0, w:19, s:0, shut:false, tear:0},   /* 3 まがお */
+  {c: -6, w:19, s:2, shut:false, tear:0},   /* 4 への字 */
+  {c:-10, w:19, s:4, shut:false, tear:0},   /* 5 こまり眉 */
+  {c:-13, w:19, s:5, shut:false, tear:1},   /* 6 涙ひとつぶ */
+  {c:-15, w:19, s:6, shut:false, tear:2},   /* 7 両目に涙 */
+  {c:-17, w:20, s:7, shut:true,  tear:3},   /* 8 泣き */
+  {c:-20, w:21, s:8, shut:true,  tear:4}    /* 9 大泣き */
+];
+function show(id, on){ $(id).style.display = on ? "" : "none"; }
 function updateFace(){
   /* 大泣き(9)からスタートし、2分ごとに1段階ずつ笑顔(0)へ。赤で1段階もどる */
   var lv = Math.min(9, Math.max(0, sadLevel));
+  var f = FACE[lv];
   $("face").className = "face f" + lv;
+  $("fMouth").setAttribute("d", "M" + (60-f.w) + " 85 Q60 " + (85+f.c) + " " + (60+f.w) + " 85");
+  show("fBrowL", f.s > 0); show("fBrowR", f.s > 0);
+  if(f.s > 0){
+    $("fBrowL").setAttribute("d", "M33 42 L48 " + (42 - f.s));      /* 外側が下がる困り眉 */
+    $("fBrowR").setAttribute("d", "M87 42 L72 " + (42 - f.s));
+  }
+  show("fEyeL", !f.shut); show("fEyeR", !f.shut);
+  show("fLidL", f.shut);  show("fLidR", f.shut);
+  show("fDropL", f.tear === 1 || f.tear === 2);
+  show("fDropR", f.tear === 2);
+  var st = f.tear >= 3;
+  show("fStreamL", st); show("fStreamR", st);
+  if(st){
+    /* 口とぶつからないよう、ほほの外側へ流す */
+    if(f.tear === 4){
+      $("fStreamL").setAttribute("d", "M42 62 L34 92");
+      $("fStreamR").setAttribute("d", "M78 62 L86 92");
+    }else{
+      $("fStreamL").setAttribute("d", "M42 62 L38 78");
+      $("fStreamR").setAttribute("d", "M78 62 L82 78");
+    }
+  }
 }
 
 /* ===== 設定の保存（端末内のみ） ===== */
