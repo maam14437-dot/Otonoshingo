@@ -10,6 +10,7 @@
   --bg:#C6C8C4; --ink:#23282B; --muted:#565B5E; --line:#AEB1AC;
   --green:#2FA95C; --yellow:#F2B824; --red:#E23B3F;
   --housing:#31363A;
+  --lamp:clamp(60px,14vh,170px);   /* ランプ径。かおの大きさ計算にも使う */
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{height:100%; background:var(--bg)}
@@ -66,7 +67,7 @@ body.muted #muteBtn .off{display:block}
   box-shadow:inset 0 2px 6px rgba(255,255,255,.08), 0 4px 16px rgba(0,0,0,.18);
 }
 .lamp{
-  width:clamp(60px,14vh,170px); height:clamp(60px,14vh,170px); border-radius:50%;
+  width:var(--lamp); height:var(--lamp); border-radius:50%;
   background:#1E2225; transition:background .25s, box-shadow .25s;
 }
 body.st-g .lamp.g{background:var(--green); box-shadow:0 0 6vh 1vh rgba(47,169,92,.55)}
@@ -89,12 +90,14 @@ body.st-r .word{color:#B02A2E}
 
 /* ── かおイラスト（赤になるたびに おこっていく） ── */
 .face{
-  flex:none; align-self:stretch;   /* 信号機と同じ高さにそろえる */
-  border:none; background:none; padding:0; cursor:pointer;
+  flex:none; border:none; background:none; padding:0; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
 }
+/* 信号機の筐体高さ＝ランプ3個 + すきま2vh×2 + 余白2vh×2 に一致させる
+   ※height:100%とwidth:autoの組み合わせはSafariで幅0になるため、両辺を明示指定 */
 .face svg{
-  height:100%; width:auto; display:none;
+  width:calc(var(--lamp)*3 + 8vh); height:calc(var(--lamp)*3 + 8vh);
+  display:none;
   fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round;
 }
 .face.f0 .s0{display:block; stroke:#1F7A41}
@@ -191,13 +194,13 @@ body.st-r .bar .fill{background:var(--red)}
 
 /* ── 縦画面 ── */
 @media (max-aspect-ratio:1/1){
+  :root{--lamp:clamp(52px,15vw,110px)}
   .hero{flex-direction:column; gap:2vh}
   .housing{flex-direction:row; padding:1.6vh 4vw; gap:4vw}
-  .lamp{width:clamp(52px,15vw,110px); height:clamp(52px,15vw,110px)}
+  .lamp{width:var(--lamp); height:var(--lamp)}
   .num{font-size:clamp(72px,24vw,180px)}
   .word{font-size:clamp(22px,7vw,48px)}
-  .face{align-self:center}
-  .face svg{height:auto; width:clamp(70px,22vw,150px)}
+  .face svg{width:calc(var(--lamp) + 3.2vh); height:calc(var(--lamp) + 3.2vh)}
   .stage{padding-top:clamp(52px,7vh,72px); gap:2vh}
   .barwrap{width:92vw}
   #gate .d{white-space:normal; font-size:clamp(12px,3.4vw,18px); max-width:22em}
@@ -207,10 +210,12 @@ body.st-r .bar .fill{background:var(--red)}
 }
 /* ── 高さのひくい横画面（iPhone横向きなど） ── */
 @media (orientation:landscape) and (max-height:520px){
+  :root{--lamp:clamp(34px,13vh,60px)}
   .stage{padding:44px 3vw 8px; gap:8px}
   .hero{gap:6vw}
   .housing{padding:8px; gap:8px; border-radius:12px}
-  .lamp{width:clamp(34px,13vh,60px); height:clamp(34px,13vh,60px)}
+  .lamp{width:var(--lamp); height:var(--lamp)}
+  .face svg{width:calc(var(--lamp)*3 + 32px); height:calc(var(--lamp)*3 + 32px)}
   body.st-g .lamp.g{box-shadow:0 0 18px 4px rgba(47,169,92,.55)}
   body.st-y .lamp.y{box-shadow:0 0 18px 4px rgba(242,184,36,.55)}
   body.st-r .lamp.r{box-shadow:0 0 18px 4px rgba(226,59,63,.6)}
