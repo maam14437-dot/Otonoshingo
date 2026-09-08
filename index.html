@@ -88,7 +88,8 @@ body.st-r .word{color:#B02A2E}
 }
 .num-label{font-weight:700; font-size:clamp(12px,1.3vw,22px); color:var(--muted); margin-top:.6vh}
 
-/* ── かおイラスト（赤になるたびに おこっていく） ── */
+/* ── かおイラスト（大泣きから2分ごとに笑顔へ。赤で1段階泣き顔にもどる） ──
+   色は 段階0の緑 → 灰 → 段階9の青 へ深まる */
 .face{
   flex:none; border:none; background:none; padding:0; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
@@ -102,14 +103,14 @@ body.st-r .word{color:#B02A2E}
 }
 .face.f0 .s0{display:block; stroke:#1F7A41}
 .face.f1 .s1{display:block; stroke:#4F7739}
-.face.f2 .s2{display:block; stroke:#75702B}
-.face.f3 .s3{display:block; stroke:#8A6508}
-.face.f4 .s4{display:block; stroke:#9C570C}
-.face.f5 .s5{display:block; stroke:#AB4A10}
-.face.f6 .s6{display:block; stroke:#B33D18}
-.face.f7 .s7{display:block; stroke:#B23122; stroke-width:1.7}
-.face.f8 .s8{display:block; stroke:#B02A2E; stroke-width:1.85}
-.face.f9 .s9{display:block; stroke:#A11C25; stroke-width:2}
+.face.f2 .s2{display:block; stroke:#5E6B55}
+.face.f3 .s3{display:block; stroke:#576570}
+.face.f4 .s4{display:block; stroke:#4F627E}
+.face.f5 .s5{display:block; stroke:#48608E}
+.face.f6 .s6{display:block; stroke:#425D9D}
+.face.f7 .s7{display:block; stroke:#3C59AC; stroke-width:1.6}
+.face.f8 .s8{display:block; stroke:#3455BA; stroke-width:1.7}
+.face.f9 .s9{display:block; stroke:#2A50C4; stroke-width:1.85}
 .face:focus-visible{outline:3px solid rgba(35,40,43,.45); outline-offset:6px; border-radius:50%}
 
 /* ── バーメーター（赤ラインをつかんで しきい値を動かす） ── */
@@ -194,10 +195,9 @@ body.st-r .bar .fill{background:var(--red)}
 
 /* ── 縦画面 ── */
 @media (max-aspect-ratio:1/1){
-  :root{--lamp:clamp(52px,15vw,110px)}
+  :root{--lamp:clamp(52px,15vw,110px)}   /* .lampは基本ルールが変数参照のため、ここは変数の上書きだけでよい */
   .hero{flex-direction:column; gap:2vh}
   .housing{flex-direction:row; padding:1.6vh 4vw; gap:4vw}
-  .lamp{width:var(--lamp); height:var(--lamp)}
   .num{font-size:clamp(72px,24vw,180px)}
   .word{font-size:clamp(22px,7vw,48px)}
   .face svg{width:calc(var(--lamp) + 3.2vh); height:calc(var(--lamp) + 3.2vh)}
@@ -214,7 +214,6 @@ body.st-r .bar .fill{background:var(--red)}
   .stage{padding:44px 3vw 8px; gap:8px}
   .hero{gap:6vw}
   .housing{padding:8px; gap:8px; border-radius:12px}
-  .lamp{width:var(--lamp); height:var(--lamp)}
   .face svg{width:calc(var(--lamp)*3 + 32px); height:calc(var(--lamp)*3 + 32px)}
   body.st-g .lamp.g{box-shadow:0 0 18px 4px rgba(47,169,92,.55)}
   body.st-y .lamp.y{box-shadow:0 0 18px 4px rgba(242,184,36,.55)}
@@ -265,17 +264,17 @@ body.st-r .bar .fill{background:var(--red)}
       <div class="num" id="nowNum">0</div>
       <div class="num-label">おとの おおきさ（めやす）</div>
     </div>
-    <button class="face f0" id="face" type="button" aria-label="せんせいの かお（おすと えがおに もどる）">
+    <button class="face f9" id="face" type="button" aria-label="せんせいの かお（おすと さいしょの ないた かおに もどる）">
       <svg class="s0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2.2 4 2.2 4-2.2 4-2.2"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
       <svg class="s1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.5 14.6s1.4 1.3 3.5 1.3 3.5-1.3 3.5-1.3"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
       <svg class="s2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8.5" y1="15" x2="15.5" y2="15"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
       <svg class="s3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15.5 15.7s-1.4-1.3-3.5-1.3-3.5 1.3-3.5 1.3"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
-      <svg class="s4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.2s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><line x1="9" y1="9.4" x2="9.01" y2="9.4"/><line x1="15" y1="9.4" x2="15.01" y2="9.4"/></svg>
-      <svg class="s5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.2s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.8 8.2l2.4.9"/><path d="M16.2 8.2l-2.4.9"/><line x1="9.2" y1="9.8" x2="9.21" y2="9.8"/><line x1="14.8" y1="9.8" x2="14.81" y2="9.8"/></svg>
-      <svg class="s6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.5s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.5 7.8l2.7 1.1"/><path d="M16.5 7.8l-2.7 1.1"/><line x1="9.3" y1="10" x2="9.31" y2="10"/><line x1="14.7" y1="10" x2="14.71" y2="10"/></svg>
-      <svg class="s7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.2 16.8s-1.6-2.4-4.2-2.4-4.2 2.4-4.2 2.4"/><path d="M7.2 7.5l3 1.4"/><path d="M16.8 7.5l-3 1.4"/><line x1="9.4" y1="10.2" x2="9.41" y2="10.2"/><line x1="14.6" y1="10.2" x2="14.61" y2="10.2"/></svg>
-      <svg class="s8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.6 16.6l1.1-.8 1.1.8 1.2-.8 1.1.8 1.2-.8 1.1.8"/><path d="M7 7.3l3.2 1.5"/><path d="M17 7.3l-3.2 1.5"/><line x1="9.4" y1="10.3" x2="9.41" y2="10.3"/><line x1="14.6" y1="10.3" x2="14.61" y2="10.3"/></svg>
-      <svg class="s9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 17l1.4-1 1.3 1 1.3-1 1.3 1 1.4-1 1.3 1"/><path d="M6.9 7.2l3.4 1.6"/><path d="M17.1 7.2l-3.4 1.6"/><line x1="9.4" y1="10.4" x2="9.41" y2="10.4"/><line x1="14.6" y1="10.4" x2="14.61" y2="10.4"/><path d="M18.6 3.4l1.3-1.5"/><path d="M20.3 5.3l1.7-.9"/></svg>
+      <svg class="s4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.2s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.6 8.6l2.4-.7"/><path d="M16.4 8.6l-2.4-.7"/><line x1="9" y1="10" x2="9.01" y2="10"/><line x1="15" y1="10" x2="15.01" y2="10"/></svg>
+      <svg class="s5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.5s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.4 9l2.6-1.1"/><path d="M16.6 9l-2.6-1.1"/><line x1="9" y1="10.2" x2="9.01" y2="10.2"/><line x1="15" y1="10.2" x2="15.01" y2="10.2"/></svg>
+      <svg class="s6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.5s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.4 9l2.6-1.1"/><path d="M16.6 9l-2.6-1.1"/><line x1="9" y1="10.2" x2="9.01" y2="10.2"/><line x1="15" y1="10.2" x2="15.01" y2="10.2"/><path d="M9 11.6c-.5.9-.5 1.7 0 2 .5-.3.5-1.1 0-2"/></svg>
+      <svg class="s7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.2 16.8s-1.6-2.4-4.2-2.4-4.2 2.4-4.2 2.4"/><path d="M7.3 9.2l2.7-1.3"/><path d="M16.7 9.2l-2.7-1.3"/><line x1="9" y1="10.3" x2="9.01" y2="10.3"/><line x1="15" y1="10.3" x2="15.01" y2="10.3"/><path d="M9 11.7c-.5.9-.5 1.7 0 2 .5-.3.5-1.1 0-2"/><path d="M15 11.7c-.5.9-.5 1.7 0 2 .5-.3.5-1.1 0-2"/></svg>
+      <svg class="s8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.2 16.8s-1.6-2.4-4.2-2.4-4.2 2.4-4.2 2.4"/><path d="M7.2 9.2l2.8-1.4"/><path d="M16.8 9.2l-2.8-1.4"/><path d="M8.1 10.6q.9-1.1 1.8 0"/><path d="M14.1 10.6q.9-1.1 1.8 0"/><path d="M9 11.6v2.4"/><path d="M15 11.6v2.4"/></svg>
+      <svg class="s9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.4 17.1s-1.7-2.6-4.4-2.6-4.4 2.6-4.4 2.6"/><path d="M7 9.4l3-1.7"/><path d="M17 9.4l-3-1.7"/><path d="M8 10.7q1-1.2 2 0"/><path d="M14 10.7q1-1.2 2 0"/><path d="M9 11.6v3.2"/><path d="M15 11.6v3.2"/><path d="M7.5 12.4v1.8"/><path d="M16.5 12.4v1.8"/></svg>
     </button>
   </div>
   <div class="barwrap">
@@ -313,7 +312,7 @@ body.st-r .bar .fill{background:var(--red)}
     <div class="body">
       <p>教室の音の大きさをマイクで計り、信号機の色（青→黄→赤）で知らせるツールです。教室の大型モニタに映してお使いください。</p>
       <p><b>つかいかた：</b>メーターの赤いラインを左右にドラッグして「あかに なる おおきさ」を決めます（キーボードの←→でも動かせます）。その85%（黄色いライン）をこえると黄色、赤いラインをこえると赤になり、警告音が1回鳴ります。一度黄色より下に下がるまで、次の警告音は鳴りません。</p>
-      <p><b>かおイラスト：</b>赤になるたびに、かおが1段階ずつ怒った表情に変わります（ぜんぶで10種類、9回めでいちばん怒った顔）。青のまま2分間しずかにできると、1段階ずつもどっていきます（とちゅうで黄や赤になると、2分は数えなおし）。かおを押すと、すぐに笑顔にもどせます。回数は保存されず、ページの再読み込みでも笑顔にもどります。</p>
+      <p><b>かおイラスト：</b>さいしょは 大泣きの顔から はじまり、2分たつごとに1段階ずつ笑顔に近づいていきます（ぜんぶで10種類、18分で いちばんの笑顔）。赤になると1段階泣き顔にもどり、2分も はじめから数えなおしです。かおを押すと、さいしょの大泣きにもどります（授業のはじめにお使いください）。段階は保存されず、ページの再読み込みでも大泣きにもどります。</p>
       <p><b>けいそくの一時停止：</b>警告音を マイクが拾わないよう、警告音のあいだと そのあと0.5秒は計測を止め、そのあと自動で再開します。</p>
       <p><b>おおきさの数字について：</b>表示は0〜100の「めやす」です。マイクの感度は端末ごとにちがうため、正確な騒音計（デシベル）の代わりにはなりません。教室にあわせて赤いラインを調整してください。</p>
       <p><b>先生・おうちのかたへ：</b>マイクの音はこの端末の中だけで処理し、録音・保存・送信は一切しません。端末（ブラウザ）に保存されるのは赤いラインの位置と音のオン・オフだけで、サーバーには何も送られません。</p>
@@ -330,7 +329,7 @@ var $ = function(id){ return document.getElementById(id); };
 var KEY = "mm_oto_shingo";        /* 保存するのは {th, mute} のみ */
 var DB_MIN = -60, DB_MAX = -8;    /* この範囲を 0〜100 に対応させる */
 var RED_HOLD = 1500;              /* 赤を最低これだけ(ms)見せる */
-var CALM_MS = 120000;             /* 青がこれだけ(2分)続いたら、かおを1段階もどす */
+var CALM_MS = 120000;             /* 2分たつごとに、かおを1段階わらわせる */
 var YELLOW_RATIO = 0.85;          /* 黄＝赤の85% */
 var TH_MIN = 20, TH_MAX = 100;
 var BEEP_DUR = 550;               /* 警告音の長さ(ms) */
@@ -343,13 +342,13 @@ var armed = true;                 /* 黄より下に戻るまで次の警告音�
 var redUntil = 0;
 var pauseUntil = 0;               /* 警告音対策：この時刻まで計測しない */
 var state = "g";
-var redCount = 0;                 /* 赤になった回数（表示せず、かおの段階にだけ使う。保存しない） */
-var greenSince = 0;               /* 青が続きはじめた時刻。0=青ではない */
+var sadLevel = 9;                 /* 0=にこにこ 〜 9=大泣き。泣き顔からスタート（保存しない） */
+var lastStepAt = 0;               /* 2分タイマーの起点 */
 var analyser = null, dataBuf = null, actx = null;
 
 function updateFace(){
-  /* 笑顔＋怒り9段階＝計10種。1回ごとに1段階、9回でマックス */
-  var lv = Math.min(redCount, 9);
+  /* 大泣き(9)からスタートし、2分ごとに1段階ずつ笑顔(0)へ。赤で1段階もどる */
+  var lv = Math.min(9, Math.max(0, sadLevel));
   $("face").className = "face f" + lv;
 }
 
@@ -422,31 +421,31 @@ function loop(){
   var target = paused ? 0 : levelNow();
   disp += (target - disp) * (target > disp ? 0.4 : 0.07);
 
+  if(!lastStepAt) lastStepAt = now;   /* 計測開始時にタイマー起動 */
+
   if(!paused && disp >= th){
     redUntil = now + RED_HOLD;
     if(armed){
       beep();
-      redCount++;
+      sadLevel = Math.min(9, sadLevel + 1);   /* 赤＝1段階泣き顔へ */
+      lastStepAt = now;                        /* 2分タイマーもやりなおし */
       updateFace();
       armed = false;
     }
   }
+  /* 2分たつごとに1段階わらう（赤が出るとタイマーは振り出しに） */
+  if(sadLevel > 0 && now - lastStepAt >= CALM_MS){
+    sadLevel--;
+    lastStepAt = now;
+    updateFace();
+  }
   if(now < redUntil){
     state = "r";
-    greenSince = 0;
   }else if(disp >= yellowTh()){
     state = "y";
-    greenSince = 0;
   }else{
     state = "g";
     armed = true;
-    /* 青が2分続くごとに、かおを1段階もどす（黄・赤になったら数えなおし） */
-    if(!greenSince) greenSince = now;
-    if(redCount > 0 && now - greenSince >= CALM_MS){
-      redCount--;
-      updateFace();
-      greenSince = now;   /* 次の1段階は、さらに2分後 */
-    }
   }
   render();
   requestAnimationFrame(loop);
@@ -526,7 +525,9 @@ $("fsBtn").addEventListener("click", function(){
 if(!document.documentElement.requestFullscreen){ $("fsBtn").style.display = "none"; }
 $("helpBtn").addEventListener("click", function(){ $("help").hidden = false; });
 $("face").addEventListener("click", function(){
-  redCount = 0; updateFace();
+  sadLevel = 9;                       /* さいしょ（大泣き）からやりなおし */
+  lastStepAt = performance.now();
+  updateFace();
 });
 $("helpX").addEventListener("click", function(){ $("help").hidden = true; });
 $("help").addEventListener("click", function(e){ if(e.target === this) $("help").hidden = true; });
@@ -534,6 +535,7 @@ $("help").addEventListener("click", function(e){ if(e.target === this) $("help")
 /* ===== 起動 ===== */
 loadCfg();
 renderMarks();
+updateFace();   /* sadLevelの初期値(9=大泣き)をDOMに反映 */
 render();
 })();
 </script>
