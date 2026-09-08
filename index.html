@@ -89,18 +89,24 @@ body.st-r .word{color:#B02A2E}
 
 /* ── かおイラスト（赤になるたびに おこっていく） ── */
 .face{
-  flex:none; border:none; background:none; padding:0; cursor:pointer;
+  flex:none; align-self:stretch;   /* 信号機と同じ高さにそろえる */
+  border:none; background:none; padding:0; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
 }
 .face svg{
-  width:clamp(80px,20vh,220px); height:auto; display:none;
+  height:100%; width:auto; display:none;
   fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round;
 }
 .face.f0 .s0{display:block; stroke:#1F7A41}
-.face.f1 .s1{display:block; stroke:#3A4045}
-.face.f2 .s2{display:block; stroke:#8A6508}
-.face.f3 .s3{display:block; stroke:#B4520E; stroke-width:1.8}
-.face.f4 .s4{display:block; stroke:#B02A2E; stroke-width:2}
+.face.f1 .s1{display:block; stroke:#4F7739}
+.face.f2 .s2{display:block; stroke:#75702B}
+.face.f3 .s3{display:block; stroke:#8A6508}
+.face.f4 .s4{display:block; stroke:#9C570C}
+.face.f5 .s5{display:block; stroke:#AB4A10}
+.face.f6 .s6{display:block; stroke:#B33D18}
+.face.f7 .s7{display:block; stroke:#B23122; stroke-width:1.7}
+.face.f8 .s8{display:block; stroke:#B02A2E; stroke-width:1.85}
+.face.f9 .s9{display:block; stroke:#A11C25; stroke-width:2}
 .face:focus-visible{outline:3px solid rgba(35,40,43,.45); outline-offset:6px; border-radius:50%}
 
 /* ── バーメーター（赤ラインをつかんで しきい値を動かす） ── */
@@ -161,7 +167,10 @@ body.st-r .bar .fill{background:var(--red)}
 }
 #gate[hidden]{display:none}
 #gate .t{font-weight:800; font-size:clamp(22px,3.2vw,56px)}
-#gate .d{font-weight:700; font-size:clamp(13px,1.3vw,22px); color:var(--muted); line-height:1.8; max-width:34em}
+#gate .d{
+  font-weight:700; color:var(--muted); line-height:1.9;
+  font-size:clamp(9px,1.75vw,21px); white-space:nowrap;   /* 1文＝1行（計2行）に収める */
+}
 #gateBtn{
   display:flex; align-items:center; gap:.5em;
   font-weight:800; font-size:clamp(20px,2.6vw,46px); color:#fff;
@@ -187,9 +196,11 @@ body.st-r .bar .fill{background:var(--red)}
   .lamp{width:clamp(52px,15vw,110px); height:clamp(52px,15vw,110px)}
   .num{font-size:clamp(72px,24vw,180px)}
   .word{font-size:clamp(22px,7vw,48px)}
-  .face svg{width:clamp(56px,16vw,110px)}
+  .face{align-self:center}
+  .face svg{height:auto; width:clamp(70px,22vw,150px)}
   .stage{padding-top:clamp(52px,7vh,72px); gap:2vh}
   .barwrap{width:92vw}
+  #gate .d{white-space:normal; font-size:clamp(12px,3.4vw,18px); max-width:22em}
 }
 @media (prefers-reduced-motion:reduce){
   body,.lamp,.bar .fill{transition:none}
@@ -206,7 +217,6 @@ body.st-r .bar .fill{background:var(--red)}
   .word{font-size:clamp(16px,6vh,30px)}
   .num{font-size:clamp(52px,26vh,110px)}
   .num-label{font-size:11px; margin-top:2px}
-  .face svg{width:clamp(40px,15vh,64px)}
   .bar{height:16px}
   .barwrap{margin-top:20px}
   .mark.y{top:-5px; bottom:-5px; width:7px}
@@ -252,10 +262,15 @@ body.st-r .bar .fill{background:var(--red)}
     </div>
     <button class="face f0" id="face" type="button" aria-label="せんせいの かお（おすと えがおに もどる）">
       <svg class="s0" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2.2 4 2.2 4-2.2 4-2.2"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
-      <svg class="s1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8.5" y1="15" x2="15.5" y2="15"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
-      <svg class="s2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.2s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
-      <svg class="s3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.5s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.2 7.6l3 1.2"/><path d="M16.8 7.6l-3 1.2"/><line x1="9.4" y1="10.2" x2="9.41" y2="10.2"/><line x1="14.6" y1="10.2" x2="14.61" y2="10.2"/></svg>
-      <svg class="s4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 17l1.4-1 1.3 1 1.3-1 1.3 1 1.4-1 1.3 1"/><path d="M6.9 7.2l3.4 1.6"/><path d="M17.1 7.2l-3.4 1.6"/><line x1="9.4" y1="10.4" x2="9.41" y2="10.4"/><line x1="14.6" y1="10.4" x2="14.61" y2="10.4"/></svg>
+      <svg class="s1" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.5 14.6s1.4 1.3 3.5 1.3 3.5-1.3 3.5-1.3"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
+      <svg class="s2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8.5" y1="15" x2="15.5" y2="15"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
+      <svg class="s3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15.5 15.7s-1.4-1.3-3.5-1.3-3.5 1.3-3.5 1.3"/><line x1="9" y1="9.2" x2="9.01" y2="9.2"/><line x1="15" y1="9.2" x2="15.01" y2="9.2"/></svg>
+      <svg class="s4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.2s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><line x1="9" y1="9.4" x2="9.01" y2="9.4"/><line x1="15" y1="9.4" x2="15.01" y2="9.4"/></svg>
+      <svg class="s5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.2s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.8 8.2l2.4.9"/><path d="M16.2 8.2l-2.4.9"/><line x1="9.2" y1="9.8" x2="9.21" y2="9.8"/><line x1="14.8" y1="9.8" x2="14.81" y2="9.8"/></svg>
+      <svg class="s6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16 16.5s-1.5-2.2-4-2.2-4 2.2-4 2.2"/><path d="M7.5 7.8l2.7 1.1"/><path d="M16.5 7.8l-2.7 1.1"/><line x1="9.3" y1="10" x2="9.31" y2="10"/><line x1="14.7" y1="10" x2="14.71" y2="10"/></svg>
+      <svg class="s7" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M16.2 16.8s-1.6-2.4-4.2-2.4-4.2 2.4-4.2 2.4"/><path d="M7.2 7.5l3 1.4"/><path d="M16.8 7.5l-3 1.4"/><line x1="9.4" y1="10.2" x2="9.41" y2="10.2"/><line x1="14.6" y1="10.2" x2="14.61" y2="10.2"/></svg>
+      <svg class="s8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8.6 16.6l1.1-.8 1.1.8 1.2-.8 1.1.8 1.2-.8 1.1.8"/><path d="M7 7.3l3.2 1.5"/><path d="M17 7.3l-3.2 1.5"/><line x1="9.4" y1="10.3" x2="9.41" y2="10.3"/><line x1="14.6" y1="10.3" x2="14.61" y2="10.3"/></svg>
+      <svg class="s9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 17l1.4-1 1.3 1 1.3-1 1.3 1 1.4-1 1.3 1"/><path d="M6.9 7.2l3.4 1.6"/><path d="M17.1 7.2l-3.4 1.6"/><line x1="9.4" y1="10.4" x2="9.41" y2="10.4"/><line x1="14.6" y1="10.4" x2="14.61" y2="10.4"/><path d="M18.6 3.4l1.3-1.5"/><path d="M20.3 5.3l1.7-.9"/></svg>
     </button>
   </div>
   <div class="barwrap">
@@ -293,7 +308,7 @@ body.st-r .bar .fill{background:var(--red)}
     <div class="body">
       <p>教室の音の大きさをマイクで計り、信号機の色（青→黄→赤）で知らせるツールです。教室の大型モニタに映してお使いください。</p>
       <p><b>つかいかた：</b>メーターの赤いラインを左右にドラッグして「あかに なる おおきさ」を決めます（キーボードの←→でも動かせます）。その85%（黄色いライン）をこえると黄色、赤いラインをこえると赤になり、警告音が1回鳴ります。一度黄色より下に下がるまで、次の警告音は鳴りません。</p>
-      <p><b>かおイラスト：</b>赤になるたびに、かおが5段階でだんだん怒った表情に変わります。青のまま2分間しずかにできると、かおが1段階ずつもどっていきます（とちゅうで黄や赤になると、2分は数えなおし）。かおを押すと、すぐに笑顔にもどせます。回数は保存されず、ページの再読み込みでも笑顔にもどります。</p>
+      <p><b>かおイラスト：</b>赤になるたびに、かおが1段階ずつ怒った表情に変わります（ぜんぶで10種類、9回めでいちばん怒った顔）。青のまま2分間しずかにできると、1段階ずつもどっていきます（とちゅうで黄や赤になると、2分は数えなおし）。かおを押すと、すぐに笑顔にもどせます。回数は保存されず、ページの再読み込みでも笑顔にもどります。</p>
       <p><b>けいそくの一時停止：</b>警告音を マイクが拾わないよう、警告音のあいだと そのあと0.5秒は計測を止め、そのあと自動で再開します。</p>
       <p><b>おおきさの数字について：</b>表示は0〜100の「めやす」です。マイクの感度は端末ごとにちがうため、正確な騒音計（デシベル）の代わりにはなりません。教室にあわせて赤いラインを調整してください。</p>
       <p><b>先生・おうちのかたへ：</b>マイクの音はこの端末の中だけで処理し、録音・保存・送信は一切しません。端末（ブラウザ）に保存されるのは赤いラインの位置と音のオン・オフだけで、サーバーには何も送られません。</p>
@@ -328,7 +343,8 @@ var greenSince = 0;               /* 青が続きはじめた時刻。0=青で�
 var analyser = null, dataBuf = null, actx = null;
 
 function updateFace(){
-  var lv = Math.min(redCount, 4);
+  /* 笑顔＋怒り9段階＝計10種。1回ごとに1段階、9回でマックス */
+  var lv = Math.min(redCount, 9);
   $("face").className = "face f" + lv;
 }
 
