@@ -91,7 +91,7 @@ body.st-r .word{color:#B02A2E}
 /* ── かおイラスト（大泣きから2分ごとに笑顔へ。赤で1段階泣き顔にもどる） ──
    ユニバーサルデザイン方針：太い輪郭のピクトグラム調。段階は色ではなく
    「口の曲がり・困り眉・涙」の形で伝える（色覚特性に依存しない）。
-   線の太さは全段階・全パーツで一定（7.5/120 ＝ 旧1.5/24 と同じ比率） */
+   線の太さは全段階・全パーツで一定（5/120 ＝ 旧尺度の1.0 相当） */
 .face{
   flex:none; border:none; background:none; padding:0; cursor:pointer;
   display:flex; align-items:center; justify-content:center;
@@ -102,11 +102,11 @@ body.st-r .word{color:#B02A2E}
   width:calc(var(--lamp)*3 + 8vh); height:calc(var(--lamp)*3 + 8vh);
   display:block;
 }
-.fskin{fill:#FFFFFF; stroke:var(--ink); stroke-width:7.5}
-.fink{fill:none; stroke:var(--ink); stroke-width:7.5; stroke-linecap:round; stroke-linejoin:round}
-.feye{fill:var(--ink)}
+.fskin{fill:#FFCC4D; stroke:#664500; stroke-width:5}
+.fink{fill:none; stroke:#664500; stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
+.feye{fill:#664500}
 .fdrop{fill:#2F6FD0}
-.fstream{fill:none; stroke:#2F6FD0; stroke-width:7.5; stroke-linecap:round}
+.fstream{fill:none; stroke:#2F6FD0; stroke-width:5; stroke-linecap:round}
 .face:focus-visible{outline:3px solid rgba(35,40,43,.45); outline-offset:6px; border-radius:50%}
 
 /* ── バーメーター（赤ラインをつかんで しきい値を動かす） ── */
